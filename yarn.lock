@@ -2486,9 +2486,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"rev@workspace:.":
+"rev-bible@workspace:.":
   version: 0.0.0-use.local
-  resolution: "rev@workspace:."
+  resolution: "rev-bible@workspace:."
   dependencies:
     "@tsconfig/node14": ^1.0.1
     "@types/eslint": ^7

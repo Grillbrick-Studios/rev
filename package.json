@@ -16,7 +16,9 @@
 		"url": "git+https://github.com/jhessin/rev.git"
 	},
 	"keywords": [],
-	"files": ["dist/**/*"],
+	"files": [
+		"dist/**/*"
+	],
 	"author": "Jim Hessin",
 	"license": "ISC",
 	"bugs": {
