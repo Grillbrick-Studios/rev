@@ -1,0 +1,47 @@
+{
+	"name": "rev",
+	"version": "1.0.0",
+	"description": "This is a package for accessing the REV bible, commentary, and appendices through NPM.",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"dev": "nodemon",
+		"build": "tsc",
+		"prepublish": "tsc",
+		"format": "prettier --write 'src/**/*.{js,ts,tsx}'",
+		"lint": "eslint 'src/**/*.{js,ts,tsx}' --fix"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jhessin/rev.git"
+	},
+	"keywords": [],
+	"files": ["dist/**/*"],
+	"author": "Jim Hessin",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/jhessin/rev/issues"
+	},
+	"homepage": "https://github.com/jhessin/rev#readme",
+	"packageManager": "yarn@3.0.0",
+	"devDependencies": {
+		"@tsconfig/node14": "^1.0.1",
+		"@types/eslint": "^7",
+		"@types/eslint-plugin-prettier": "^3",
+		"@types/node": "^16.4.10",
+		"@types/node-fetch": "^2",
+		"@types/prettier": "^2",
+		"@typescript-eslint/eslint-plugin": "^4.29.0",
+		"@typescript-eslint/parser": "^4.29.0",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^3.4.0",
+		"nodemon": "^2.0.12",
+		"prettier": "^2.3.2",
+		"ts-node": "^10.1.0",
+		"typescript": "^4.3.5"
+	},
+	"dependencies": {
+		"node-fetch": "^2.6.1"
+	}
+}
