@@ -1,5 +1,4 @@
 /** @format */
-import { log } from "console";
 import fetch from "node-fetch";
 import { promises as fs } from "fs";
 
@@ -25,15 +24,15 @@ export class Appendices {
 	private constructor() {}
 
 	private static async fetch() {
-		log("Fetching appendices from the web. please wait...");
+		console.log("Fetching appendices from the web. please wait...");
 		const res = await fetch(URL);
-		log("appendices downloaded!");
+		console.log("appendices downloaded!");
 		const commentary = await res.json();
 		Appendices.data = commentary;
 	}
 
 	private static async writeToFile() {
-		log("writing appendices to a local file. please wait...");
+		console.log("writing appendices to a local file. please wait...");
 		const data: iAppendicesJson = {
 			date: new Date(),
 			REV_Appendices: Appendices.data,
@@ -42,17 +41,17 @@ export class Appendices {
 		fs.writeFile(Filename, JSON.stringify(data), {
 			encoding: "utf8",
 		});
-		log("appendices saved!");
+		console.log("appendices saved!");
 	}
 
 	private static async readFromFile() {
-		log("Reading appendices from disk. please wait...");
+		console.log("Reading appendices from disk. please wait...");
 		const commentaryString = await fs.readFile(Filename, {
 			encoding: "utf8",
 		});
 		const appendices: iAppendicesJson = JSON.parse(commentaryString);
 		Appendices.data = appendices.REV_Appendices;
-		log("appendices loaded from disk!");
+		console.log("appendices loaded from disk!");
 
 		// Check for out of date
 		if (typeof appendices.date === "string")
@@ -62,7 +61,7 @@ export class Appendices {
 			new Date().getTime() - appendices.date.getTime() >
 			1000 * 60 * 60 * 24 * 7
 		) {
-			log("appendices out of date - refreshing");
+			console.log("appendices out of date - refreshing");
 			await Appendices.fetch();
 			await Appendices.writeToFile();
 		}

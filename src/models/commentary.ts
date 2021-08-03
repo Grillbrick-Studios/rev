@@ -1,5 +1,4 @@
 /** @format */
-import { log } from "console";
 import fetch from "node-fetch";
 import { promises as fs } from "fs";
 
@@ -33,15 +32,15 @@ export class Commentary {
 	private selectedVerse?: number;
 
 	private static async fetch() {
-		log("Fetching commentary from web please wait...");
+		console.log("Fetching commentary from web please wait...");
 		const res = await fetch(URL);
-		log("Commentary downloaded!");
+		console.log("Commentary downloaded!");
 		const commentary: CommentaryJson = await res.json();
 		Commentary.data = commentary.REV_Commentary;
 	}
 
 	private static async writeToFile() {
-		log("Writing commentary to file please wait...");
+		console.log("Writing commentary to file please wait...");
 		await fs.writeFile(
 			Filename,
 			JSON.stringify({
@@ -52,17 +51,17 @@ export class Commentary {
 				encoding: "utf8",
 			},
 		);
-		log("Commentary Saved");
+		console.log("Commentary Saved");
 	}
 
 	private static async readFromFile() {
-		log("Loading Commentary from disk.");
+		console.log("Loading Commentary from disk.");
 		const commentaryString = await fs.readFile(Filename, {
 			encoding: "utf8",
 		});
 		const commentary: CommentaryJson = JSON.parse(commentaryString);
 		Commentary.data = commentary.REV_Commentary;
-		log("Commentary loaded!");
+		console.log("Commentary loaded!");
 
 		// Check for out of date
 		if (typeof commentary.date === "string")
@@ -72,7 +71,7 @@ export class Commentary {
 			new Date().getTime() - commentary.date.getTime() >
 			1000 * 60 * 60 * 24 * 7
 		) {
-			log("Commentary out of date!");
+			console.log("Commentary out of date!");
 			await Commentary.fetch();
 			await Commentary.writeToFile();
 		}
@@ -89,7 +88,9 @@ export class Commentary {
 				await Commentary.fetch();
 				await Commentary.writeToFile();
 			} else {
-				log(`An unknown error occured reading the CommentaryFile: ${err}`);
+				console.log(
+					`An unknown error occured reading the CommentaryFile: ${err}`,
+				);
 			}
 		}
 	}

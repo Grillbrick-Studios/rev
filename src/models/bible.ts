@@ -1,6 +1,5 @@
 /** @format */
 
-import { log } from "console";
 import fetch from "node-fetch";
 import { promises as fs } from "fs";
 import { iVerse, Verse } from "./verse";
@@ -29,16 +28,16 @@ export class Bible {
 	private selectedVerse?: number;
 
 	private static async fetch() {
-		log("Fetching bible from web. Please wait...");
+		console.log("Fetching bible from web. Please wait...");
 
 		const res = await fetch(URL);
 		const bible: iBibleJson = await res.json();
 		Bible.verses = bible.REV_Bible.map((v) => new Verse(v));
-		log("Bible downloaded!");
+		console.log("Bible downloaded!");
 	}
 
 	private static async writeToFile() {
-		log("Saving Bible to file. Please wait...");
+		console.log("Saving Bible to file. Please wait...");
 
 		fs.writeFile(
 			Filename,
@@ -50,24 +49,24 @@ export class Bible {
 				encoding: "utf8",
 			},
 		);
-		log("Bible Saved to disk!");
+		console.log("Bible Saved to disk!");
 	}
 
 	private static async readFromFile() {
-		log("Fetching bible from file. Please wait...");
+		console.log("Fetching bible from file. Please wait...");
 
 		const bibleString: string = await fs.readFile(Filename, {
 			encoding: "utf-8",
 		});
 		const bible: iBibleJson = JSON.parse(bibleString);
 		Bible.verses = bible.REV_Bible.map((v) => new Verse(v));
-		log("Bible loaded from disk");
+		console.log("Bible loaded from disk");
 
 		// check if the date is outdated
 		if (typeof bible.date === "string") bible.date = new Date(bible.date);
 
 		if (new Date().getTime() - bible.date.getTime() > 1000 * 60 * 60 * 24 * 7) {
-			log("Bible out of date - updating...");
+			console.log("Bible out of date - updating...");
 			await Bible.fetch();
 			await Bible.writeToFile();
 		}
@@ -84,7 +83,7 @@ export class Bible {
 				await Bible.fetch();
 				await Bible.writeToFile();
 			} else {
-				log(`An unknown error occured reading the BibleFile: ${err}`);
+				console.log(`An unknown error occured reading the BibleFile: ${err}`);
 			}
 		}
 	}

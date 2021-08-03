@@ -1,13 +1,13 @@
 {
 	"name": "rev-bible",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "This is a package for accessing the REV bible, commentary, and appendices through NPM.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"dev": "nodemon",
 		"build": "tsc",
-		"prepublish": "tsc",
+		"prepare": "yarn format && yarn lint && yarn tsc",
 		"format": "prettier --write 'src/**/*.{js,ts,tsx}'",
 		"lint": "eslint 'src/**/*.{js,ts,tsx}' --fix"
 	},
