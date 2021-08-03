@@ -1,11 +1,8 @@
 /** @format */
 import fetch from "node-fetch";
-import { promises as fs } from "fs";
 
 const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=commentary";
-
-const Filename = "data/commentary.json";
 
 interface iCommentary {
 	book: string;
@@ -39,65 +36,9 @@ export class Commentary {
 		Commentary.data = commentary.REV_Commentary;
 	}
 
-	private static async writeToFile() {
-		console.log("Writing commentary to file please wait...");
-		await fs.writeFile(
-			Filename,
-			JSON.stringify({
-				date: new Date(),
-				REV_Commentary: Commentary.data,
-			}),
-			{
-				encoding: "utf8",
-			},
-		);
-		console.log("Commentary Saved");
-	}
-
-	private static async readFromFile() {
-		console.log("Loading Commentary from disk.");
-		const commentaryString = await fs.readFile(Filename, {
-			encoding: "utf8",
-		});
-		const commentary: CommentaryJson = JSON.parse(commentaryString);
-		Commentary.data = commentary.REV_Commentary;
-		console.log("Commentary loaded!");
-
-		// Check for out of date
-		if (typeof commentary.date === "string")
-			commentary.date = new Date(commentary.date);
-
-		if (
-			new Date().getTime() - commentary.date.getTime() >
-			1000 * 60 * 60 * 24 * 7
-		) {
-			console.log("Commentary out of date!");
-			await Commentary.fetch();
-			await Commentary.writeToFile();
-		}
-	}
-
-	private static async init() {
-		// check if the file exists
-		try {
-			await fs.stat(Filename);
-			await Commentary.readFromFile();
-		} catch (err) {
-			if (err.code === "ENOENT") {
-				// File doesn't exist
-				await Commentary.fetch();
-				await Commentary.writeToFile();
-			} else {
-				console.log(
-					`An unknown error occured reading the CommentaryFile: ${err}`,
-				);
-			}
-		}
-	}
-
 	static async onReady(): Promise<Commentary> {
 		if (Commentary.data) return new Commentary();
-		await Commentary.init();
+		await Commentary.fetch();
 		return new Commentary();
 	}
 

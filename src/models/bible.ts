@@ -1,16 +1,13 @@
 /** @format */
 
 import fetch from "node-fetch";
-import { promises as fs } from "fs";
 import { iVerse, Verse } from "./verse";
 
 export const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=bible";
 
-const Filename = "data/bible.json";
-
 export interface iBibleJson {
-	date: Date | string;
+	date?: Date | string;
 	// eslint-disable-next-line camelcase
 	REV_Bible: iVerse[];
 }
@@ -18,8 +15,20 @@ export interface iBibleJson {
 export class Bible {
 	private static verses: Verse[];
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	private constructor() {}
+	public get data(): Verse[] {
+		return Bible.verses;
+	}
+
+	public set data(verses: Verse[]) {
+		Bible.verses = verses;
+	}
+
+	constructor(verses?: iVerse[]) {
+		if (verses) Bible.verses = verses.map((v) => new Verse(v));
+		else if (!Bible.verses) Bible.fetch();
+	}
+
+	save?: (bible: Bible) => void;
 
 	private selectedBook?: string;
 
@@ -36,65 +45,9 @@ export class Bible {
 		console.log("Bible downloaded!");
 	}
 
-	private static async writeToFile() {
-		console.log("Saving Bible to file. Please wait...");
-
-		fs.writeFile(
-			Filename,
-			JSON.stringify({
-				date: new Date(),
-				REV_Bible: Bible.verses.map((v) => v.unwrap),
-			}),
-			{
-				encoding: "utf8",
-			},
-		);
-		console.log("Bible Saved to disk!");
-	}
-
-	private static async readFromFile() {
-		console.log("Fetching bible from file. Please wait...");
-
-		const bibleString: string = await fs.readFile(Filename, {
-			encoding: "utf-8",
-		});
-		const bible: iBibleJson = JSON.parse(bibleString);
-		Bible.verses = bible.REV_Bible.map((v) => new Verse(v));
-		console.log("Bible loaded from disk");
-
-		// check if the date is outdated
-		if (typeof bible.date === "string") bible.date = new Date(bible.date);
-
-		if (new Date().getTime() - bible.date.getTime() > 1000 * 60 * 60 * 24 * 7) {
-			console.log("Bible out of date - updating...");
-			await Bible.fetch();
-			await Bible.writeToFile();
-		}
-	}
-
-	static async init(): Promise<void> {
-		// check if the file exists.
-		try {
-			await fs.stat(Filename);
-			await Bible.readFromFile();
-		} catch (err) {
-			if (err.code === "ENOENT") {
-				// BibleFile doesn't exist.
-				await Bible.fetch();
-				await Bible.writeToFile();
-			} else {
-				console.log(`An unknown error occured reading the BibleFile: ${err}`);
-			}
-		}
-	}
-
-	static async onReady(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-		cb: (verses: Bible) => void = (_) => {},
-	): Promise<Bible> {
-		if (Bible.verses) cb(new Bible());
-		else await Bible.init();
-		cb(new Bible());
+	static async onReady(): Promise<Bible> {
+		if (Bible.verses) return new Bible();
+		else await Bible.fetch();
 		return new Bible();
 	}
 
