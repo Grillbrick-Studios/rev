@@ -1,6 +1,7 @@
 /** @format */
 
 import fetch from "node-fetch";
+import { iData } from "./interfaces";
 import { iVerse, Verse } from "./verse";
 
 export const URL =
@@ -12,20 +13,23 @@ export interface iBibleJson {
 	REV_Bible: iVerse[];
 }
 
-export class Bible {
+export class Bible implements iData<iVerse> {
 	private static verses: Verse[];
 
-	public static get data(): Verse[] {
+	public static get data(): iVerse[] {
 		return Bible.verses;
 	}
 
-	public static set data(verses: Verse[]) {
-		Bible.verses = verses;
+	public get data(): Verse[] {
+		return Bible.verses;
 	}
 
-	private constructor(verses?: iVerse[]) {
-		if (verses) Bible.verses = verses.map((v) => new Verse(v));
-		else if (!Bible.verses) Bible.fetch();
+	public static set data(verses: iVerse[]) {
+		Bible.verses = verses.map((v) => new Verse(v));
+	}
+
+	constructor(verses: iVerse[]) {
+		Bible.verses = verses.map((v) => new Verse(v));
 	}
 
 	save?: (bible: Bible) => void;
@@ -46,9 +50,9 @@ export class Bible {
 	}
 
 	static async onReady(): Promise<Bible> {
-		if (Bible.verses) return new Bible();
+		if (Bible.verses) return new Bible(Bible.verses);
 		else await Bible.fetch();
-		return new Bible();
+		return new Bible(Bible.verses);
 	}
 
 	getFunnyVerses(): string[] {
@@ -93,16 +97,19 @@ export class Bible {
 		return this.getVerses(book, chapter).length;
 	}
 
-	ls(): Verse[] | number[] | string[] {
+	ls(): string[] {
 		if (this.selectedVerse && this.selectedChapter && this.selectedBook)
 			return this.getVerses(
 				this.selectedBook,
 				this.selectedChapter,
 				this.selectedVerse,
-			);
+			).map((v) => v.html());
 		if (this.selectedChapter && this.selectedBook)
-			return this.getVerseNumbers(this.selectedBook, this.selectedChapter);
-		if (this.selectedBook) return this.getChapters(this.selectedBook);
+			return this.getVerseNumbers(this.selectedBook, this.selectedChapter).map(
+				(v) => v.toString(),
+			);
+		if (this.selectedBook)
+			return this.getChapters(this.selectedBook).map((v) => v.toString());
 		return this.getBooks();
 	}
 

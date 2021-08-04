@@ -1,5 +1,6 @@
 /** @format */
 import fetch from "node-fetch";
+import { iData } from "./interfaces";
 
 const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=commentary";
@@ -16,11 +17,17 @@ interface CommentaryJson {
 	REV_Commentary: iCommentary[];
 }
 
-export class Commentary {
-	private static data: iCommentary[];
+export class Commentary implements iData<iCommentary> {
+	private static _data: iCommentary[];
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	private constructor() {}
+	constructor(data: iCommentary[]) {
+		Commentary._data = data;
+	}
+
+	public get data(): iCommentary[] {
+		return Commentary._data;
+	}
 
 	private selectedBook?: string;
 
@@ -33,32 +40,32 @@ export class Commentary {
 		const res = await fetch(URL);
 		console.log("Commentary downloaded!");
 		const commentary: CommentaryJson = await res.json();
-		Commentary.data = commentary.REV_Commentary;
+		Commentary._data = commentary.REV_Commentary;
 	}
 
 	static async onReady(): Promise<Commentary> {
-		if (Commentary.data) return new Commentary();
+		if (Commentary._data) return new Commentary(Commentary._data);
 		await Commentary.fetch();
-		return new Commentary();
+		return new Commentary(Commentary._data);
 	}
 
 	getBooks(): string[] {
-		const booksArray = Commentary.data.map((v) => v.book);
+		const booksArray = Commentary._data.map((v) => v.book);
 		const bookSet = new Set(booksArray);
 		return new Array(...bookSet.keys());
 	}
 
 	getChapters(book: string): string[] {
-		const chapterArray = Commentary.data
+		const chapterArray = Commentary._data
 			.filter((v) => v.book === book)
 			.map((v) => v.chapter);
 		const chapterSet = new Set(chapterArray);
 		return new Array(...chapterSet.keys());
 	}
 
-	getVerses(book: string, chapter: number, verse?: number): string | string[] {
+	getVerses(book: string, chapter: number, verse?: number): string[] {
 		if (verse) {
-			const verseArray = Commentary.data
+			const verseArray = Commentary._data
 				.filter(
 					(v) =>
 						v.book === book &&
@@ -66,9 +73,9 @@ export class Commentary {
 						v.verse === verse.toString(),
 				)
 				.map((v) => v.commentary);
-			return verseArray[0];
+			return verseArray;
 		}
-		const verseArray = Commentary.data
+		const verseArray = Commentary._data
 			.filter((v) => v.book === book && v.chapter === chapter.toString())
 			.map((v) => v.verse);
 		const verseSet = new Set(verseArray);
@@ -99,7 +106,7 @@ export class Commentary {
 		}
 	}
 
-	ls(): string | string[] {
+	ls(): string[] {
 		const { selectedVerse, selectedChapter, selectedBook } = this;
 		if (selectedBook) {
 			if (selectedChapter) {
