@@ -15,15 +15,15 @@ export interface iBibleJson {
 export class Bible {
 	private static verses: Verse[];
 
-	public get data(): Verse[] {
+	public static get data(): Verse[] {
 		return Bible.verses;
 	}
 
-	public set data(verses: Verse[]) {
+	public static set data(verses: Verse[]) {
 		Bible.verses = verses;
 	}
 
-	constructor(verses?: iVerse[]) {
+	private constructor(verses?: iVerse[]) {
 		if (verses) Bible.verses = verses.map((v) => new Verse(v));
 		else if (!Bible.verses) Bible.fetch();
 	}
