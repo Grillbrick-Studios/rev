@@ -25,6 +25,15 @@ export class Commentary implements iData<iCommentary> {
 		Commentary._data = data;
 	}
 
+	public get path(): string {
+		if (this.selectedVerse)
+			return `Commentary for ${this.selectedBook} ${this.selectedChapter}:${this.selectedVerse}`;
+		if (this.selectedChapter)
+			return `Commentary for ${this.selectedBook} ${this.selectedChapter}`;
+		if (this.selectedBook) return `Commentary for ${this.selectedBook}`;
+		return "Commentary";
+	}
+
 	public get data(): iCommentary[] {
 		return Commentary._data;
 	}
@@ -120,9 +129,24 @@ export class Commentary implements iData<iCommentary> {
 		return this.getBooks();
 	}
 
-	up(): void {
-		if (this.selectedVerse) this.selectedVerse = undefined;
-		else if (this.selectedChapter) this.selectedChapter = undefined;
-		else this.selectedBook = undefined;
+	up(): boolean {
+		if (this.selectedVerse) {
+			this.selectedVerse = undefined;
+			return true;
+		} else if (this.selectedChapter) {
+			this.selectedChapter = undefined;
+			return true;
+		} else if (this.selectedBook) {
+			this.selectedBook = undefined;
+			return true;
+		}
+		return false;
+	}
+
+	select(target: string): void {
+		if (this.selectedVerse) this.selectVerse(parseInt(target));
+		else if (this.selectedChapter) this.selectVerse(parseInt(target));
+		else if (this.selectedBook) this.selectChapter(parseInt(target));
+		else this.selectBook(target);
 	}
 }

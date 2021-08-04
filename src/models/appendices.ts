@@ -17,6 +17,21 @@ export interface iAppendicesJson {
 
 export class Appendices implements iData<iAppendices> {
 	private static _data: iAppendices[];
+	private _selectedTitle?: string;
+
+	public set selectedTitle(target: string | undefined) {
+		if (target === undefined || this.getTitles().indexOf(target) >= 0) {
+			this._selectedTitle = target;
+		}
+	}
+
+	public get path(): string {
+		if (this.selectedTitle) return this.selectedTitle;
+		return "Appendices";
+	}
+	public get selectedTitle(): string | undefined {
+		return this._selectedTitle;
+	}
 
 	public static set data(d: iAppendices[]) {
 		Appendices._data = d;
@@ -36,7 +51,25 @@ export class Appendices implements iData<iAppendices> {
 	}
 
 	ls(): string[] {
+		if (this.selectedTitle) {
+			const appendix = Appendices.data.find(
+				(a) => a.title === this.selectedTitle,
+			);
+			if (appendix) return [appendix.appendix];
+		}
 		return this.getTitles();
+	}
+
+	up(): boolean {
+		if (this.selectedTitle) {
+			this.selectedTitle = undefined;
+			return true;
+		}
+		return false;
+	}
+
+	select(target: string) {
+		this.selectedTitle = target;
 	}
 
 	private static async fetch() {
