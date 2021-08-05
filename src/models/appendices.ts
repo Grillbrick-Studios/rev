@@ -25,12 +25,13 @@ export class Appendices implements iData<iAppendices> {
 		}
 	}
 
+	public get selectedTitle(): string | undefined {
+		return this._selectedTitle;
+	}
+
 	public get path(): string {
 		if (this.selectedTitle) return this.selectedTitle;
 		return "Appendices";
-	}
-	public get selectedTitle(): string | undefined {
-		return this._selectedTitle;
 	}
 
 	public static set data(d: iAppendices[]) {
@@ -68,7 +69,7 @@ export class Appendices implements iData<iAppendices> {
 		return false;
 	}
 
-	select(target: string) {
+	select(target: string): void {
 		this.selectedTitle = target;
 	}
 

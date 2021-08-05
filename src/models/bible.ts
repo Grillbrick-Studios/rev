@@ -20,6 +20,10 @@ export class Bible implements iData<iVerse> {
 		return Bible.verses;
 	}
 
+	public static set data(verses: iVerse[]) {
+		Bible.verses = verses.map((v) => new Verse(v));
+	}
+
 	public get data(): Verse[] {
 		return Bible.verses;
 	}
@@ -31,10 +35,6 @@ export class Bible implements iData<iVerse> {
 			return `${this.selectedBook} ${this.selectedChapter}`;
 		if (this.selectedBook) return `${this.selectedBook}`;
 		return "Bible";
-	}
-
-	public static set data(verses: iVerse[]) {
-		Bible.verses = verses.map((v) => new Verse(v));
 	}
 
 	constructor(verses: iVerse[]) {
@@ -154,7 +154,7 @@ export class Bible implements iData<iVerse> {
 		return false;
 	}
 
-	select(target: string) {
+	select(target: string): void {
 		if (this.selectedVerse) this.selectVerse(parseInt(target));
 		else if (this.selectedChapter) this.selectVerse(parseInt(target));
 		else if (this.selectedBook) this.selectChapter(parseInt(target));
