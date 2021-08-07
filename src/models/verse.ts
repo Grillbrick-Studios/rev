@@ -13,18 +13,31 @@ export interface iVerse {
 }
 
 export class Verse implements iVerse {
-	private data: iVerse;
-
-	public get unwrap(): iVerse {
-		return this.data;
-	}
 
 	constructor(data: iVerse) {
-		this.data = data;
+		this.book = data.book;
+		this.chapter = data.chapter;
+		this.verse = data.verse;
+		this.heading = data.heading;
+		this.microheading = data.microheading;
+		this.paragraph = data.paragraph;
+		this.style = data.style;
+		this.footnotes = data.footnotes;
+		this.versetext = data.versetext;
 	}
 
+	book: string;
+	chapter: number;
+	verse: number;
+	heading: string;
+	microheading: number;
+	paragraph: number;
+	style: number;
+	footnotes: string;
+	versetext: string;
+
 	public html(): string {
-		let result = this.data.versetext;
+		let result = this.versetext;
 		result = result?.replace(/\[hp\]/g, "<br />");
 		result = result?.replace(/\[hpbegin\]/g, '<div class="hp">');
 		result = result?.replace(/\[hpend\]/g, "</div>");
@@ -49,42 +62,4 @@ export class Verse implements iVerse {
 		return `${this.book} ${this.chapter}:${this.verse} ${result}`;
 	}
 
-	/// Getters ///
-	// #region
-	public get book(): string {
-		return this.data.book;
-	}
-
-	public get chapter(): number {
-		return this.data.chapter;
-	}
-
-	public get verse(): number {
-		return this.data.verse;
-	}
-
-	public get heading(): string {
-		return this.data.heading;
-	}
-
-	public get microheading(): number {
-		return this.data.microheading;
-	}
-
-	public get paragraph(): number {
-		return this.data.paragraph;
-	}
-
-	public get style(): number {
-		return this.data.style;
-	}
-
-	public get footnotes(): string {
-		return this.data.footnotes;
-	}
-
-	public get versetext(): string {
-		return this.data.versetext;
-	}
-	// #endregion
 }

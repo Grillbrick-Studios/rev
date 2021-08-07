@@ -8,7 +8,6 @@ export const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=bible";
 
 export interface iBibleJson {
-	date?: Date | string;
 	// eslint-disable-next-line camelcase
 	REV_Bible: iVerse[];
 }
@@ -24,7 +23,7 @@ export class Bible implements iData<iVerse> {
 		Bible.verses = verses.map((v) => new Verse(v));
 	}
 
-	public get data(): Verse[] {
+	public get data(): iVerse[] {
 		return Bible.verses;
 	}
 
@@ -52,8 +51,7 @@ export class Bible implements iData<iVerse> {
 	private static async fetch() {
 		console.log("Fetching bible from web. Please wait...");
 
-		const res = await fetch(URL);
-		const bible: iBibleJson = await res.json();
+		const bible: iBibleJson = await fetch(URL).then((res) => res.json());
 		Bible.verses = bible.REV_Bible.map((v) => new Verse(v));
 		console.log("Bible downloaded!");
 	}
