@@ -13,7 +13,6 @@ export interface iVerse {
 }
 
 export class Verse implements iVerse {
-
 	constructor(data: iVerse) {
 		this.book = data.book;
 		this.chapter = data.chapter;
@@ -61,5 +60,4 @@ export class Verse implements iVerse {
 		result = result?.replace(/\]/g, "</em>");
 		return `${this.book} ${this.chapter}:${this.verse} ${result}`;
 	}
-
 }
