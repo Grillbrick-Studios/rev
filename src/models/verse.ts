@@ -35,6 +35,31 @@ export class Verse implements iVerse {
 	footnotes: string;
 	versetext: string;
 
+	public unwrap(): iVerse {
+		const {
+			book,
+			chapter,
+			verse,
+			heading,
+			microheading,
+			paragraph,
+			style,
+			footnotes,
+			versetext,
+		} = this;
+		return {
+			book,
+			chapter,
+			verse,
+			heading,
+			microheading,
+			paragraph,
+			style,
+			footnotes,
+			versetext,
+		};
+	}
+
 	public html(): string {
 		let result = this.versetext;
 		result = result?.replace(/\[hp\]/g, "<br />");

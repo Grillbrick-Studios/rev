@@ -16,7 +16,7 @@ export class Bible implements iData<iVerse> {
 	private static verses: Verse[];
 
 	public static get data(): iVerse[] {
-		return Bible.verses;
+		return Bible.verses.map((v) => v.unwrap());
 	}
 
 	public static set data(verses: iVerse[]) {
