@@ -5,7 +5,7 @@ import { iData } from "./interfaces";
 const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=appendices";
 
-interface iAppendices {
+export interface iAppendices {
 	title: string;
 	appendix: string;
 }

@@ -5,7 +5,7 @@ import { iData } from "./interfaces";
 const URL =
 	"https://www.revisedenglishversion.com/jsonrevexport.php?permission=yUp&autorun=1&what=commentary";
 
-interface iCommentary {
+export interface iCommentary {
 	book: string;
 	chapter: string;
 	verse: string;
